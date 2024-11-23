@@ -78,7 +78,7 @@ export interface CameraPreviewPlugin {
    * @throws An error if the something went wrong
    * @since 0.0.1
    */
-  start(options: CameraPreviewOptions): Promise<void>;
+  start(options: CameraPreviewOptions): Promise<{ depthParamsSupported: boolean }>;
   /**
    * Stop the camera preview instance.
    * @returns {Promise<void>} an Promise that resolves when the instance is stopped
@@ -147,7 +147,7 @@ export interface CameraPreviewPlugin {
    * @throws An error if the something went wrong
    * @since 0.0.1
    */
-  flip(): Promise<void>;
+  flip(): Promise<{ depthParamsSupported: boolean }>;
   /**
    * Set opacity.
    * @param {CameraOpacityOptions} options the options to set the camera opacity with
@@ -163,7 +163,7 @@ export interface CameraPreviewPlugin {
    * @throws An error if the something went wrong
    * @since 0.0.1
    */
-  stopRecordVideo(): Promise<{ videoFilePath: string }>;
+  stopRecordVideo(): Promise<{ videoFilePath: string, calibrationData?: Record<string, Record<string, number[] | number>> }>;
   /**
    * Start recording video.
    * @param {CameraPreviewOptions} options the options to start recording video with

@@ -185,7 +185,7 @@ Documentation for the [uploader](https://github.com/Cap-go/capacitor-uploader)
 ### start(...)
 
 ```typescript
-start(options: CameraPreviewOptions) => Promise<void>
+start(options: CameraPreviewOptions) => Promise<{ depthParamsSupported: boolean; }>
 ```
 
 Start the camera preview instance.
@@ -193,6 +193,8 @@ Start the camera preview instance.
 | Param         | Type                                                                  | Description                                  |
 | ------------- | --------------------------------------------------------------------- | -------------------------------------------- |
 | **`options`** | <code><a href="#camerapreviewoptions">CameraPreviewOptions</a></code> | the options to start the camera preview with |
+
+**Returns:** <code>Promise&lt;{ depthParamsSupported: boolean; }&gt;</code>
 
 **Since:** 0.0.1
 
@@ -313,10 +315,12 @@ Set flash mode.
 ### flip()
 
 ```typescript
-flip() => Promise<void>
+flip() => Promise<{ depthParamsSupported: boolean; }>
 ```
 
 Flip camera.
+
+**Returns:** <code>Promise&lt;{ depthParamsSupported: boolean; }&gt;</code>
 
 **Since:** 0.0.1
 
@@ -343,12 +347,12 @@ Set opacity.
 ### stopRecordVideo()
 
 ```typescript
-stopRecordVideo() => Promise<{ videoFilePath: string; }>
+stopRecordVideo() => Promise<{ videoFilePath: string; calibrationData?: Record<string, Record<string, number[] | number>>; }>
 ```
 
 Stop recording video.
 
-**Returns:** <code>Promise&lt;{ videoFilePath: string; }&gt;</code>
+**Returns:** <code>Promise&lt;{ videoFilePath: string; calibrationData?: <a href="#record">Record</a>&lt;string, <a href="#record">Record</a>&lt;string, number | number[]&gt;&gt;; }&gt;</code>
 
 **Since:** 0.0.1
 
@@ -439,5 +443,12 @@ Start recording video.
 #### CameraPreviewFlashMode
 
 <code>"off" | "on" | "auto" | "red-eye" | "torch"</code>
+
+
+#### Record
+
+Construct a type with a set of properties K of type T
+
+<code>{ [P in K]: T; }</code>
 
 </docgen-api>
