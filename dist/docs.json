@@ -1,0 +1,648 @@
+{
+  "api": {
+    "name": "CameraPreviewPlugin",
+    "slug": "camerapreviewplugin",
+    "docs": "",
+    "tags": [],
+    "methods": [
+      {
+        "name": "start",
+        "signature": "(options: CameraPreviewOptions) => Promise<{ depthParamsSupported: boolean; }>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "the options to start the camera preview with",
+            "type": "CameraPreviewOptions"
+          }
+        ],
+        "returns": "Promise<{ depthParamsSupported: boolean; }>",
+        "tags": [
+          {
+            "name": "param",
+            "text": "options the options to start the camera preview with"
+          },
+          {
+            "name": "returns",
+            "text": "an Promise that resolves when the instance is started"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Start the camera preview instance.",
+        "complexTypes": [
+          "CameraPreviewOptions"
+        ],
+        "slug": "start"
+      },
+      {
+        "name": "stop",
+        "signature": "() => Promise<void>",
+        "parameters": [],
+        "returns": "Promise<void>",
+        "tags": [
+          {
+            "name": "returns",
+            "text": "an Promise that resolves when the instance is stopped"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Stop the camera preview instance.",
+        "complexTypes": [],
+        "slug": "stop"
+      },
+      {
+        "name": "capture",
+        "signature": "(options: CameraPreviewPictureOptions) => Promise<{ value: string; }>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "the options to switch the camera with",
+            "type": "CameraPreviewPictureOptions"
+          }
+        ],
+        "returns": "Promise<{ value: string; }>",
+        "tags": [
+          {
+            "name": "param",
+            "text": "options the options to switch the camera with"
+          },
+          {
+            "name": "returns",
+            "text": "an Promise that resolves when the camera is switched"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Switch camera.",
+        "complexTypes": [
+          "CameraPreviewPictureOptions"
+        ],
+        "slug": "capture"
+      },
+      {
+        "name": "captureSample",
+        "signature": "(options: CameraSampleOptions) => Promise<{ value: string; }>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "the options to capture the sample image with",
+            "type": "CameraSampleOptions"
+          }
+        ],
+        "returns": "Promise<{ value: string; }>",
+        "tags": [
+          {
+            "name": "param",
+            "text": "options the options to capture the sample image with"
+          },
+          {
+            "name": "returns",
+            "text": "an Promise that resolves with the sample image as a base64 encoded string"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Capture a sample image.",
+        "complexTypes": [
+          "CameraSampleOptions"
+        ],
+        "slug": "capturesample"
+      },
+      {
+        "name": "getSupportedFlashModes",
+        "signature": "() => Promise<{ result: CameraPreviewFlashMode[]; }>",
+        "parameters": [],
+        "returns": "Promise<{ result: CameraPreviewFlashMode[]; }>",
+        "tags": [
+          {
+            "name": "returns",
+            "text": "an Promise that resolves with the supported flash modes"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Get supported flash modes.",
+        "complexTypes": [
+          "CameraPreviewFlashMode"
+        ],
+        "slug": "getsupportedflashmodes"
+      },
+      {
+        "name": "getHorizontalFov",
+        "signature": "() => Promise<{ result: any; }>",
+        "parameters": [],
+        "returns": "Promise<{ result: any; }>",
+        "tags": [
+          {
+            "name": "returns",
+            "text": "an Promise that resolves with the horizontal field of view"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Get horizontal field of view.",
+        "complexTypes": [],
+        "slug": "gethorizontalfov"
+      },
+      {
+        "name": "getSupportedPictureSizes",
+        "signature": "() => Promise<{ supportedPictureSizes: { facing: string; supportedPictureSizes: { width: number; height: number; }[]; }[]; }>",
+        "parameters": [],
+        "returns": "Promise<{ supportedPictureSizes: { facing: string; supportedPictureSizes: { width: number; height: number; }[]; }[]; }>",
+        "tags": [
+          {
+            "name": "returns",
+            "text": "an Promise that resolves with the supported picture sizes for a given device"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something goes wrong"
+          }
+        ],
+        "docs": "Gets the supported picture sizes for a given device.",
+        "complexTypes": [],
+        "slug": "getsupportedpicturesizes"
+      },
+      {
+        "name": "setFlashMode",
+        "signature": "(options: { flashMode: CameraPreviewFlashMode | string; }) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "the options to set the flash mode with",
+            "type": "{ flashMode: string; }"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [
+          {
+            "name": "param",
+            "text": "options the options to set the flash mode with"
+          },
+          {
+            "name": "returns",
+            "text": "an Promise that resolves when the flash mode is set"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Set flash mode.",
+        "complexTypes": [
+          "CameraPreviewFlashMode"
+        ],
+        "slug": "setflashmode"
+      },
+      {
+        "name": "flip",
+        "signature": "() => Promise<{ depthParamsSupported: boolean; }>",
+        "parameters": [],
+        "returns": "Promise<{ depthParamsSupported: boolean; }>",
+        "tags": [
+          {
+            "name": "returns",
+            "text": "an Promise that resolves when the camera is flipped"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Flip camera.",
+        "complexTypes": [],
+        "slug": "flip"
+      },
+      {
+        "name": "setOpacity",
+        "signature": "(options: CameraOpacityOptions) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "the options to set the camera opacity with",
+            "type": "CameraOpacityOptions"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [
+          {
+            "name": "param",
+            "text": "options the options to set the camera opacity with"
+          },
+          {
+            "name": "returns",
+            "text": "an Promise that resolves when the camera color effect is set"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Set opacity.",
+        "complexTypes": [
+          "CameraOpacityOptions"
+        ],
+        "slug": "setopacity"
+      },
+      {
+        "name": "stopRecordVideo",
+        "signature": "() => Promise<{ videoFilePath: string; calibrationData?: Record<string, Record<string, number[] | number>>; }>",
+        "parameters": [],
+        "returns": "Promise<{ videoFilePath: string; calibrationData?: Record<string, Record<string, number | number[]>> | undefined; }>",
+        "tags": [
+          {
+            "name": "param",
+            "text": "options the options to stop recording video with"
+          },
+          {
+            "name": "returns",
+            "text": "an Promise that resolves when the camera zoom is set"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Stop recording video.",
+        "complexTypes": [
+          "Record"
+        ],
+        "slug": "stoprecordvideo"
+      },
+      {
+        "name": "startRecordVideo",
+        "signature": "(options: CameraPreviewOptions) => Promise<void>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "the options to start recording video with",
+            "type": "CameraPreviewOptions"
+          }
+        ],
+        "returns": "Promise<void>",
+        "tags": [
+          {
+            "name": "param",
+            "text": "options the options to start recording video with"
+          },
+          {
+            "name": "returns",
+            "text": "an Promise that resolves when the video recording is started"
+          },
+          {
+            "name": "throws",
+            "text": "An error if the something went wrong"
+          },
+          {
+            "name": "since",
+            "text": "0.0.1"
+          }
+        ],
+        "docs": "Start recording video.",
+        "complexTypes": [
+          "CameraPreviewOptions"
+        ],
+        "slug": "startrecordvideo"
+      }
+    ],
+    "properties": []
+  },
+  "interfaces": [
+    {
+      "name": "CameraPreviewOptions",
+      "slug": "camerapreviewoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "parent",
+          "tags": [],
+          "docs": "Parent element to attach the video preview element to (applicable to the web platform only)",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "className",
+          "tags": [],
+          "docs": "Class name to add to the video preview element (applicable to the web platform only)",
+          "complexTypes": [],
+          "type": "string | undefined"
+        },
+        {
+          "name": "width",
+          "tags": [],
+          "docs": "The preview width in pixels, default window.screen.width",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "height",
+          "tags": [],
+          "docs": "The preview height in pixels, default window.screen.height",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "x",
+          "tags": [],
+          "docs": "The x origin, default 0 (applicable to the android and ios platforms only)",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "y",
+          "tags": [],
+          "docs": "The y origin, default 0 (applicable to the android and ios platforms only)",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "toBack",
+          "tags": [],
+          "docs": "Brings your html in front of your preview, default false (applicable to the android only)",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "paddingBottom",
+          "tags": [],
+          "docs": "The preview bottom padding in pixes. Useful to keep the appropriate preview sizes when orientation changes (applicable to the android and ios platforms only)",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "rotateWhenOrientationChanged",
+          "tags": [],
+          "docs": "Rotate preview when orientation changes (applicable to the ios platforms only; default value is true)",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "position",
+          "tags": [],
+          "docs": "Choose the camera to use 'front' or 'rear', default 'front'",
+          "complexTypes": [
+            "CameraPosition"
+          ],
+          "type": "string | undefined"
+        },
+        {
+          "name": "storeToFile",
+          "tags": [],
+          "docs": "Defaults to false - Capture images to a file and return the file path instead of returning base64 encoded data",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "disableExifHeaderStripping",
+          "tags": [],
+          "docs": "Defaults to false - Android Only - Disable automatic rotation of the image, and let the browser deal with it (keep reading on how to achieve it)",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "enableHighResolution",
+          "tags": [],
+          "docs": "Defaults to false - iOS only - Activate high resolution image capture so that output images are from the highest resolution possible on the device *",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "disableAudio",
+          "tags": [],
+          "docs": "Defaults to false - Web only - Disables audio stream to prevent permission requests and output switching",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "lockAndroidOrientation",
+          "tags": [],
+          "docs": "Android Only - Locks device orientation when camera is showing.",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "enableOpacity",
+          "tags": [],
+          "docs": "Defaults to false - Android and Web only.  Set if camera preview can change opacity.",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "enableZoom",
+          "tags": [],
+          "docs": "Defaults to false - Android only.  Set if camera preview will support pinch to zoom.",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        },
+        {
+          "name": "cameraMode",
+          "tags": [],
+          "docs": "default to false - IOS only. Set the CameraPreview to use the video mode preset",
+          "complexTypes": [],
+          "type": "boolean | undefined"
+        }
+      ]
+    },
+    {
+      "name": "CameraPreviewPictureOptions",
+      "slug": "camerapreviewpictureoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "height",
+          "tags": [],
+          "docs": "The picture height, optional, default 0 (Device default)",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "width",
+          "tags": [],
+          "docs": "The picture width, optional, default 0 (Device default)",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "quality",
+          "tags": [],
+          "docs": "The picture quality, 0 - 100, default 85",
+          "complexTypes": [],
+          "type": "number | undefined"
+        },
+        {
+          "name": "format",
+          "tags": [],
+          "docs": "The picture format, jpeg or png, default jpeg on `Web`.\n\nquality has no effect on png",
+          "complexTypes": [
+            "PictureFormat"
+          ],
+          "type": "PictureFormat"
+        }
+      ]
+    },
+    {
+      "name": "CameraSampleOptions",
+      "slug": "camerasampleoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "quality",
+          "tags": [],
+          "docs": "The picture quality, 0 - 100, default 85",
+          "complexTypes": [],
+          "type": "number | undefined"
+        }
+      ]
+    },
+    {
+      "name": "CameraOpacityOptions",
+      "slug": "cameraopacityoptions",
+      "docs": "",
+      "tags": [],
+      "methods": [],
+      "properties": [
+        {
+          "name": "opacity",
+          "tags": [],
+          "docs": "The percent opacity to set for camera view, default 1",
+          "complexTypes": [],
+          "type": "number | undefined"
+        }
+      ]
+    }
+  ],
+  "enums": [],
+  "typeAliases": [
+    {
+      "name": "CameraPosition",
+      "slug": "cameraposition",
+      "docs": "",
+      "types": [
+        {
+          "text": "\"rear\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"front\"",
+          "complexTypes": []
+        }
+      ]
+    },
+    {
+      "name": "PictureFormat",
+      "slug": "pictureformat",
+      "docs": "",
+      "types": [
+        {
+          "text": "\"jpeg\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"png\"",
+          "complexTypes": []
+        }
+      ]
+    },
+    {
+      "name": "CameraPreviewFlashMode",
+      "slug": "camerapreviewflashmode",
+      "docs": "",
+      "types": [
+        {
+          "text": "\"off\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"on\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"auto\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"red-eye\"",
+          "complexTypes": []
+        },
+        {
+          "text": "\"torch\"",
+          "complexTypes": []
+        }
+      ]
+    },
+    {
+      "name": "Record",
+      "slug": "record",
+      "docs": "Construct a type with a set of properties K of type T",
+      "types": [
+        {
+          "text": "{\r\n    [P in K]: T;\r\n}",
+          "complexTypes": [
+            "K",
+            "T"
+          ]
+        }
+      ]
+    }
+  ],
+  "pluginConfigs": []
+}

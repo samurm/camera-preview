@@ -23,7 +23,7 @@ export class CameraPreviewWeb extends WebPlugin implements CameraPreviewPlugin {
     });
   }
 
-  async start(options: CameraPreviewOptions): Promise<void> {
+  async start(options: CameraPreviewOptions): Promise<{ depthParamsSupported: boolean }> {
     await navigator.mediaDevices
       .getUserMedia({
         audio: !options.disableAudio,
@@ -102,8 +102,10 @@ export class CameraPreviewWeb extends WebPlugin implements CameraPreviewPlugin {
           },
         );
       }
+      return { depthParamsSupported: false };
     } else {
       Promise.reject(new Error("camera already started"));
+      return { depthParamsSupported: false };
     }
   }
 
@@ -203,8 +205,17 @@ export class CameraPreviewWeb extends WebPlugin implements CameraPreviewPlugin {
     );
   }
 
-  async flip(): Promise<void> {
+  async flip(): Promise<{ depthParamsSupported: boolean }> {
     throw new Error("flip not supported under the web platform");
+  }
+
+  async getSupportedPictureSizes(): Promise<{
+    supportedPictureSizes: {
+      facing: string;
+      supportedPictureSizes: { width: number; height: number }[];
+    }[];
+  }> {
+    throw new Error("getSupportedPictureSizes not supported under the web platform");
   }
 
   async setOpacity(_options: CameraOpacityOptions): Promise<any> {

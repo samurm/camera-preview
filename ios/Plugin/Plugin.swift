@@ -222,8 +222,18 @@ public class CameraPreview: CAPPlugin {
                         if self.rotateWhenOrientationChanged == true {
                             NotificationCenter.default.addObserver(self, selector: #selector(CameraPreview.rotated), name: UIDevice.orientationDidChangeNotification, object: nil)
                         }
+                        
+                        var isDepthParamsSupported: Bool = false
+                        switch self.cameraController.currentCameraPosition {
+                        case .front:
+                            isDepthParamsSupported = self.cameraController.frontCamera?.activeDepthDataFormat != nil
+                        case .rear:
+                            isDepthParamsSupported = self.cameraController.rearCamera?.activeDepthDataFormat != nil
+                        case .none:
+                            isDepthParamsSupported = false
+                        }
 
-                        call.resolve()
+                        call.resolve(["depthParamsSupported": isDepthParamsSupported])
 
                     }
                 }
@@ -235,7 +245,18 @@ public class CameraPreview: CAPPlugin {
     @objc func flip(_ call: CAPPluginCall) {
         do {
             try self.cameraController.switchCameras()
-            call.resolve()
+
+            var isDepthParamsSupported: Bool = false
+            switch self.cameraController.currentCameraPosition {
+            case .front:
+                isDepthParamsSupported = self.cameraController.frontCamera?.activeDepthDataFormat != nil
+            case .rear:
+                isDepthParamsSupported = self.cameraController.rearCamera?.activeDepthDataFormat != nil
+            case .none:
+                isDepthParamsSupported = false
+            }
+
+            call.resolve(["depthParamsSupported": isDepthParamsSupported])
         } catch {
             call.reject("failed to flip camera")
         }
@@ -388,8 +409,8 @@ public class CameraPreview: CAPPlugin {
     }
 
     @objc func startRecordVideo(_ call: CAPPluginCall) {
-        if #unavailable(iOS 17) {
-            call.reject("You cannot record video on IOS < 17")
+        if #unavailable(iOS 16) {
+            call.reject("You cannot record video on IOS < 16")
         }
         DispatchQueue.main.async {
             do {
@@ -414,7 +435,8 @@ public class CameraPreview: CAPPlugin {
                     return
                 }
 
-                call.resolve(["videoFilePath": fileURL.absoluteString])
+                call.resolve(["videoFilePath": fileURL.absoluteString,
+                              "calibrationData": self.cameraController.calibrationData])
             }
         }
     }

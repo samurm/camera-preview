@@ -19,6 +19,11 @@ class CameraController: NSObject {
 
     var dataOutput: AVCaptureVideoDataOutput?
     var photoOutput: AVCapturePhotoOutput?
+    
+    var startRecordingFrame: Int? = nil
+    var depthOutput: AVCaptureDepthDataOutput!
+    var depthConnection: AVCaptureConnection?
+    var calibrationData: [String: [String: Any?]] = [:]
 
     var rearCamera: AVCaptureDevice?
     var rearCameraInput: AVCaptureDeviceInput?
@@ -42,25 +47,69 @@ class CameraController: NSObject {
     var videoFileURL: URL?
 }
 
-extension CameraController {
+extension CameraController: AVCaptureDataOutputSynchronizerDelegate, AVCaptureDepthDataOutputDelegate {
+    func dataOutputSynchronizer(_ synchronizer: AVCaptureDataOutputSynchronizer, didOutput synchronizedDataCollection: AVCaptureSynchronizedDataCollection) {
+        <#code#>
+    }
+    
+
+    func depthDataOutput(_ output: AVCaptureDepthDataOutput, didOutput depthData: AVDepthData, timestamp: CMTime, connection: AVCaptureConnection) {
+        //print("Received depth data at timestamp \(timestamp)")
+        let depthMap = depthData.depthDataMap
+        //print("Depth map dimensions: \(CVPixelBufferGetWidth(depthMap))x\(CVPixelBufferGetHeight(depthMap))")
+        
+        guard let calibrationData = depthData.cameraCalibrationData else {
+            print("No calibration data available.")
+            return
+        }
+                
+        let intrinsicMatrix = [
+            calibrationData.intrinsicMatrix.columns.0.x, calibrationData.intrinsicMatrix.columns.0.y, calibrationData.intrinsicMatrix.columns.0.z,
+            calibrationData.intrinsicMatrix.columns.1.x, calibrationData.intrinsicMatrix.columns.1.y, calibrationData.intrinsicMatrix.columns.1.z,
+            calibrationData.intrinsicMatrix.columns.2.x, calibrationData.intrinsicMatrix.columns.2.y, calibrationData.intrinsicMatrix.columns.2.z
+        ]
+        
+        let extrinsicMatrix = [
+            calibrationData.extrinsicMatrix.columns.0.x, calibrationData.extrinsicMatrix.columns.0.y, calibrationData.extrinsicMatrix.columns.0.z,
+            calibrationData.extrinsicMatrix.columns.1.x, calibrationData.extrinsicMatrix.columns.1.y, calibrationData.extrinsicMatrix.columns.1.z,
+            calibrationData.extrinsicMatrix.columns.2.x, calibrationData.extrinsicMatrix.columns.2.y, calibrationData.extrinsicMatrix.columns.2.z,
+            calibrationData.extrinsicMatrix.columns.3.x, calibrationData.extrinsicMatrix.columns.3.y, calibrationData.extrinsicMatrix.columns.3.z
+        ]
+    
+        guard self.startRecordingFrame != nil else {
+            print("Camera is not recording yet.")
+            return
+        }
+        self.startRecordingFrame! += 1
+        
+        self.calibrationData[String(self.startRecordingFrame!)] = [
+            "intrinsicMatrix": intrinsicMatrix,
+            "extrinsicMatrix": extrinsicMatrix,
+            "pixelSize": depthData.cameraCalibrationData?.pixelSize
+        ]
+    }
+    
     func prepare(cameraPosition: String, disableAudio: Bool, cameraMode: Bool, completionHandler: @escaping (Error?) -> Void) {
         func createCaptureSession() {
             self.captureSession = AVCaptureSession()
+            self.captureSession?.sessionPreset = .inputPriority
         }
 
         func configureCaptureDevices() throws {
-
-            let session = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: AVMediaType.video, position: .unspecified)
+            // Order is important, builtInWideAngleCamera has not support of depth params
+            let session = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInTripleCamera, .builtInDualCamera, .builtInTrueDepthCamera, .builtInWideAngleCamera], mediaType: AVMediaType.video, position: .unspecified)
 
             let cameras = session.devices.compactMap { $0 }
             guard !cameras.isEmpty else { throw CameraControllerError.noCamerasAvailable }
 
             for camera in cameras {
-                if camera.position == .front {
+                print("activeDepthDataFormat ", camera.activeDepthDataFormat)
+
+                if camera.position == .front && self.frontCamera == nil {
                     self.frontCamera = camera
                 }
 
-                if camera.position == .back {
+                if camera.position == .back && self.rearCamera == nil {
                     self.rearCamera = camera
 
                     try camera.lockForConfiguration()
@@ -141,6 +190,32 @@ extension CameraController {
             if captureSession.canAddOutput(self.dataOutput!) {
                 captureSession.addOutput(self.dataOutput!)
             }
+            
+            // Set up the depth output
+            self.depthOutput = AVCaptureDepthDataOutput()
+            self.depthOutput.setDelegate(self, callbackQueue: DispatchQueue(label: "depthQueue"))
+            if captureSession.canAddOutput(self.depthOutput!) {
+                captureSession.addOutput(self.depthOutput)
+            }
+            
+            if let videoConnection = self.dataOutput?.connection(with: .video),
+              let depthConnection = self.depthOutput.connection(with: .depthData) {
+              print("Connections for outputs are available")
+            } else {
+              print("Connections for outputs are not available")
+            }
+            
+            if let videoOutput = self.dataOutput, let depthOutput = self.depthOutput,
+               let videoConnection = videoOutput.connection(with: .video),
+               let depthConnection = depthOutput.connection(with: .depthData) {
+                let dataOutputSynchronizer = AVCaptureDataOutputSynchronizer(dataOutputs: [videoOutput, depthOutput])
+                dataOutputSynchronizer.setDelegate(self, queue: DispatchQueue(label: "outputSynchronizerQueue"))
+            } else {
+                print("Failed to configure connections for synchronizer")
+            }
+
+            // Link depth data to video data
+            self.depthConnection = self.depthOutput.connection(with: .depthData)
 
             captureSession.commitConfiguration()
 
@@ -432,6 +507,8 @@ extension CameraController {
     }
 
     func captureVideo() throws {
+        self.calibrationData = [:]
+
         guard let captureSession = self.captureSession, captureSession.isRunning else {
             throw CameraControllerError.captureSessionIsMissing
         }
@@ -470,12 +547,14 @@ extension CameraController {
 
         // Start recording video
         fileVideoOutput.startRecording(to: fileUrl, recordingDelegate: self)
+        self.startRecordingFrame = 0
 
         // Save the file URL for later use
         self.videoFileURL = fileUrl
     }
 
     func stopRecording(completion: @escaping (URL?, Error?) -> Void) {
+        self.startRecordingFrame = nil
         guard let captureSession = self.captureSession, captureSession.isRunning else {
             completion(nil, CameraControllerError.captureSessionIsMissing)
             return
